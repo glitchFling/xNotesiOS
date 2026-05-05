@@ -1,0 +1,27 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: 'latest-stable'
+
+    - name: Build
+      run: |
+        # Note: Since there is no .xcodeproj yet (generated via Xcode or XcodeGen),
+        # this step would normally run 'xcodebuild'.
+        # For now, we simulate a build check or run swift build if applicable.
+        echo "Starting build process for xNotes..."
+        # xcodebuild -scheme xNotes -destination 'platform=iOS Simulator,name=iPhone 15' build
