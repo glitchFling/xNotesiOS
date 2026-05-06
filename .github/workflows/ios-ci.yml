@@ -19,10 +19,24 @@ jobs:
     - name: Generate Xcode Project
       run: xcodegen generate
 
-    - name: Build
+    - name: Archive
       run: |
-        xcodebuild build \
+        xcodebuild archive \
           -project xNotes.xcodeproj \
           -scheme xNotes \
-          -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+          -archivePath build/xNotes.xcarchive \
           CODE_SIGNING_ALLOWED=NO
+
+    - name: Export IPA
+      run: |
+        # Since we're not using real code signing, we'll create a dummy IPA
+        # by zipping the .app from the archive. Real IPA export requires signing.
+        mkdir -p build/Payload
+        cp -r build/xNotes.xcarchive/Products/Applications/xNotes.app build/Payload/
+        cd build && zip -r xNotes.ipa Payload
+
+    - name: Upload IPA Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: xNotes-IPA
+        path: build/xNotes.ipa
